@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 public class Ticket {
 
+    private static int entityCount = 0;
+
     private final long id;
     private final long userId;
     private TicketType ticketType;
@@ -16,6 +18,13 @@ public class Ticket {
         this.ticketType = ticketType;
         this.userId = userId;
         this.id = id;
+    }
+
+    public Ticket(TicketType ticketType, long userId){
+        this.ticketType = ticketType;
+        this.userId = userId;
+        this.id = ++entityCount;
+        this.creationDate = LocalDateTime.now();
     }
 
     public long getId() {

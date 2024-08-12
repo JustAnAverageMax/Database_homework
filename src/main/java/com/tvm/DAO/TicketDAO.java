@@ -45,10 +45,10 @@ public class TicketDAO implements DAO<Ticket>{
 
     @Override
     public void save(Ticket entity) throws SQLException {
-        String query = "INSERT INTO ticket (ticket_type, user_id) VALUES (?, ?)";
+        String query = "INSERT INTO ticket (ticket_type, user_id) VALUES (?::ticket_type, ?)";
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setObject(1, entity.getTicketType());
+            pstmt.setObject(1, entity.getTicketType().toString());
             pstmt.setLong(2, entity.getUserId());
             pstmt.executeUpdate();
         }

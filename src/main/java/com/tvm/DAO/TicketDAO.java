@@ -5,17 +5,14 @@ import com.tvm.constants.Queries;
 import com.tvm.constants.TicketType;
 import com.tvm.utils.DBUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class TicketDAO implements DAO<Ticket>{
 
-    public List<Ticket> getTicketsByUserId(int userId )throws SQLException{
+    public List<Ticket> getTicketsByUserId(int userId)throws SQLException{
         String query = Queries.GET_TICKETS_BY_USER_ID;
         List<Ticket> tickets = new ArrayList<>();
 
@@ -43,6 +40,26 @@ public class TicketDAO implements DAO<Ticket>{
             pstmp.setLong(1, userId);
             pstmp.executeUpdate();
         }
+    }
+
+    @Override
+    public List<Ticket> getAll() throws SQLException {
+        String query = Queries.GET_ALL_TICKETS;
+        List<Ticket> tickets = new ArrayList<>();
+
+        try(Connection conn = DBUtil.connect(); Statement statement = conn.createStatement()){
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()){
+                Ticket ticket = new Ticket(
+                        resultSet.getTimestamp("creation_date").toLocalDateTime(),
+                        TicketType.valueOf(resultSet.getString("ticket_type")),
+                        resultSet.getInt("user_id"),
+                        resultSet.getInt("id")
+                );
+                tickets.add(ticket);
+            }
+        }
+        return tickets;
     }
 
     @Override

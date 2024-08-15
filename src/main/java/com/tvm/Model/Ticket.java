@@ -41,11 +41,11 @@ public class Ticket {
         this.creationDate = creationDate;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 

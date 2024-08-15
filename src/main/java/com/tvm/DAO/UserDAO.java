@@ -2,6 +2,7 @@ package com.tvm.DAO;
 
 import com.tvm.Model.Ticket;
 import com.tvm.Model.User;
+import com.tvm.constants.Queries;
 import com.tvm.utils.DBUtil;
 
 import java.sql.*;
@@ -9,7 +10,7 @@ import java.sql.*;
 public class UserDAO implements DAO<User> {
 
     public void deleteByTicket(Ticket ticket)throws SQLException{
-        String query = "DELETE FROM \"user\" WHERE id = ?";
+        String query = Queries.DELETE_USER_BY_ID;
 
         try(Connection conn = DBUtil.connect(); PreparedStatement pstmp = conn.prepareStatement(query)){
             pstmp.setLong(1, ticket.getUserId());
@@ -19,7 +20,7 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public void save(User entity) throws SQLException {
-        String query = "INSERT INTO \"user\" (name) VALUES (?)";
+        String query = Queries.SAVE_USER;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, entity.getName());
@@ -29,7 +30,7 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public User getById(int id) throws SQLException {
-        String query = "SELECT * FROM \"user\" WHERE id = ?";
+        String query = Queries.GET_USER_BY_ID;
         User user = null;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -50,7 +51,7 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public void update(int id, User entity) throws SQLException {
-        String query = "UPDATE \"user\" SET name = ? WHERE id = ?";
+        String query = Queries.UPDATE_USER;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, entity.getName());
@@ -61,7 +62,7 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public void deleteById(int id) throws SQLException {
-        String query = "DELETE FROM \"user\" WHERE id = ?";
+        String query = Queries.DELETE_USER_BY_ID;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id);

@@ -1,6 +1,7 @@
 package com.tvm.DAO;
 
 import com.tvm.Model.Ticket;
+import com.tvm.constants.Queries;
 import com.tvm.constants.TicketType;
 import com.tvm.utils.DBUtil;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class TicketDAO implements DAO<Ticket>{
 
     public List<Ticket> getTicketsByUserId(int userId )throws SQLException{
-        String query = "SELECT * FROM ticket WHERE user_id = ?";
+        String query = Queries.GET_TICKETS_BY_USER_ID;
         List<Ticket> tickets = new ArrayList<>();
 
         try(Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)){
@@ -35,7 +36,7 @@ public class TicketDAO implements DAO<Ticket>{
     }
 
     public void deleteByUserId(int userId) throws SQLException{
-        String query = "DELETE FROM ticket WHERE user_id = ?";
+        String query = Queries.DELETE_TICKET_BY_USER_ID;
 
         try(Connection conn = DBUtil.connect(); PreparedStatement pstmp = conn.prepareStatement(query)){
             pstmp.setLong(1, userId);
@@ -45,7 +46,7 @@ public class TicketDAO implements DAO<Ticket>{
 
     @Override
     public void save(Ticket entity) throws SQLException {
-        String query = "INSERT INTO ticket (ticket_type, user_id) VALUES (?::ticket_type, ?)";
+        String query = Queries.SAVE_TICKET;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setObject(1, entity.getTicketType().toString());
@@ -56,7 +57,7 @@ public class TicketDAO implements DAO<Ticket>{
 
     @Override
     public Ticket getById(int id) throws SQLException {
-        String query = "SELECT * FROM ticket WHERE id = ?";
+        String query = Queries.GET_TICKET_BY_ID;
         Ticket ticket = null;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -78,7 +79,7 @@ public class TicketDAO implements DAO<Ticket>{
 
     @Override
     public void update(int id, Ticket entity) throws SQLException {
-        String query = "UPDATE ticket SET ticket_type = ? WHERE id = ?";
+        String query = Queries.UPDATE_TICKET_TYPE;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setObject(1, entity.getTicketType());
@@ -89,7 +90,7 @@ public class TicketDAO implements DAO<Ticket>{
 
     @Override
     public void deleteById(int id) throws SQLException {
-        String query = "DELETE FROM ticket WHERE id = ?";
+        String query = Queries.DELETE_TICKET_BY_ID;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id);

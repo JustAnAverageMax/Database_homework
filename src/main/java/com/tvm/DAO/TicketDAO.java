@@ -22,7 +22,7 @@ public class TicketDAO implements DAO<Ticket>{
             while(resultSet.next()){
                 Ticket ticket = new Ticket(
                         resultSet.getTimestamp("creation_date").toLocalDateTime(),
-                        ((TicketType) resultSet.getObject("ticket_type")),
+                        TicketType.valueOf(resultSet.getString("ticket_type")),
                         resultSet.getInt("user_id"),
                         resultSet.getInt("id")
                 );
@@ -40,6 +40,21 @@ public class TicketDAO implements DAO<Ticket>{
             pstmp.setLong(1, userId);
             pstmp.executeUpdate();
         }
+    }
+
+    @Override
+    public List<Integer> getAllIds() throws SQLException {
+        String query = Queries.GET_ALL_TICKETS_IDS;
+        List<Integer> ids = new ArrayList<>();
+
+        try(Connection conn = DBUtil.connect(); Statement statement = conn.createStatement()){
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()){
+                ids.add(resultSet.getInt("id"));
+            }
+        }
+
+        return ids;
     }
 
     @Override
@@ -97,11 +112,12 @@ public class TicketDAO implements DAO<Ticket>{
 
     @Override
     public void update(int id, Ticket entity) throws SQLException {
-        String query = Queries.UPDATE_TICKET_TYPE;
+        String query = Queries.UPDATE_TICKET;
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setObject(1, entity.getTicketType());
-            pstmt.setInt(2, id);
+            pstmt.setString(1, entity.getTicketType().toString());
+            pstmt.setInt(2, entity.getUserId());
+            pstmt.setInt(3, id);
             pstmt.executeUpdate();
         }
     }

@@ -1,7 +1,6 @@
 package com.tvm.Service;
 
 import com.tvm.DAO.UserDAO;
-import com.tvm.Model.Ticket;
 import com.tvm.Model.User;
 
 import java.sql.SQLException;
@@ -11,7 +10,7 @@ import java.util.Optional;
 public class UserService {
     private final UserDAO userDAO = new UserDAO();
 
-    public List<Integer> getAllUserIds(){
+    public List<Integer> getAllUsersIds(){
         try {
            return userDAO.getAllIds();
         }catch (SQLException ex){

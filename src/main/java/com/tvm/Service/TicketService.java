@@ -4,11 +4,22 @@ import com.tvm.DAO.TicketDAO;
 import com.tvm.Model.Ticket;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class TicketService {
     private final TicketDAO ticketDAO = new TicketDAO();
+
+    public List<Integer> getAllTicketsIds(){
+        List<Integer> result = new ArrayList<>();
+        try{
+            result = ticketDAO.getAllIds();
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return result;
+    }
 
     public List<Ticket> getAllTickets(){
         try {

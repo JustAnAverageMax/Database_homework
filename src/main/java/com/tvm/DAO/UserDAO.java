@@ -1,9 +1,7 @@
 package com.tvm.DAO;
 
-import com.tvm.Model.Ticket;
 import com.tvm.Model.User;
 import com.tvm.constants.Queries;
-import com.tvm.constants.TicketType;
 import com.tvm.utils.DBUtil;
 
 import java.sql.*;
@@ -13,8 +11,9 @@ import java.util.Optional;
 
 public class UserDAO implements DAO<User> {
 
+    @Override
     public List<Integer> getAllIds() throws SQLException {
-        String query = Queries.GET_ALL_USER_IDS;
+        String query = Queries.GET_ALL_USERS_IDS;
         List<Integer> ids = new ArrayList<>();
         try (Connection conn = DBUtil.connect(); Statement statement = conn.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);

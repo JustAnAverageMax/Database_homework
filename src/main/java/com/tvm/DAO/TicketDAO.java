@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TicketDAO implements DAO<Ticket>{
 
@@ -56,21 +57,21 @@ public class TicketDAO implements DAO<Ticket>{
     }
 
     @Override
-    public Ticket getById(int id) throws SQLException {
+    public Optional<Ticket> getById(int id) throws SQLException {
         String query = Queries.GET_TICKET_BY_ID;
-        Ticket ticket = null;
+        Optional<Ticket> ticket = Optional.empty();
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id);
             ResultSet resultSet = pstmt.executeQuery();
 
             if (resultSet.next()) {
-                ticket = new Ticket(
+                ticket = Optional.of(new Ticket(
                         resultSet.getTimestamp("creation_time").toLocalDateTime(),
                         resultSet.getObject("ticket_type", TicketType.class),
                         resultSet.getInt("user_id"),
                         resultSet.getInt("id")
-                );
+                ));
             }
         }
 

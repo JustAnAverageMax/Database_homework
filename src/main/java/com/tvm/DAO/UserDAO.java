@@ -6,6 +6,7 @@ import com.tvm.constants.Queries;
 import com.tvm.utils.DBUtil;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class UserDAO implements DAO<User> {
 
@@ -29,20 +30,20 @@ public class UserDAO implements DAO<User> {
     }
 
     @Override
-    public User getById(int id) throws SQLException {
+    public Optional<User> getById(int id) throws SQLException {
         String query = Queries.GET_USER_BY_ID;
-        User user = null;
+        Optional<User> user = Optional.empty();
 
         try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id);
             ResultSet resultSet = pstmt.executeQuery();
 
             if (resultSet.next()) {
-                user = new User(
+                user = Optional.of(new User(
                         resultSet.getInt("id"),
                         resultSet.getTimestamp("creation_time").toLocalDateTime(),
                         resultSet.getString("name")
-                );
+                ));
             }
         }
 

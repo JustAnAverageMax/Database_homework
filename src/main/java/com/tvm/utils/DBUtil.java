@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBUtil {
-    public static final String URL = System.getenv("DATABASE_URL");
-    public static final String USERNAME = System.getenv("DATABASE_USERNAME");
-    public static final String PASSWORD = System.getenv("DATABASE_PASSWORD");
+    private static final String URL = System.getenv("DATABASE_URL");
+    private static final String USERNAME = System.getenv("DATABASE_USERNAME");
+    private static final String PASSWORD = System.getenv("DATABASE_PASSWORD");
 
     public static Connection connect() throws SQLException {
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);

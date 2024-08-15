@@ -41,7 +41,7 @@ public class UserDAO implements DAO<User> {
             if (resultSet.next()) {
                 user = Optional.of(new User(
                         resultSet.getInt("id"),
-                        resultSet.getTimestamp("creation_time").toLocalDateTime(),
+                        resultSet.getTimestamp("creation_date").toLocalDateTime(),
                         resultSet.getString("name")
                 ));
             }

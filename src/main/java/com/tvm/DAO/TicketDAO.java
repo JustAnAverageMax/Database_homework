@@ -67,7 +67,7 @@ public class TicketDAO implements DAO<Ticket>{
 
             if (resultSet.next()) {
                 ticket = Optional.of(new Ticket(
-                        resultSet.getTimestamp("creation_time").toLocalDateTime(),
+                        resultSet.getTimestamp("creation_date").toLocalDateTime(),
                         resultSet.getObject("ticket_type", TicketType.class),
                         resultSet.getInt("user_id"),
                         resultSet.getInt("id")

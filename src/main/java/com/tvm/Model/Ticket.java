@@ -5,26 +5,40 @@ import com.tvm.constants.TicketType;
 import java.time.LocalDateTime;
 
 public class Ticket {
-
-    private static int entityCount = 0;
-
-    private final long id;
-    private final long userId;
+    private int id;
+    private int userId;
     private TicketType ticketType;
-    private final LocalDateTime creationDate;
+    private LocalDateTime creationDate;
 
-    public Ticket(LocalDateTime creationDate, TicketType ticketType, long userId, long id) {
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", ticketType=" + ticketType +
+                ", creationDate=" + creationDate +
+                '}';
+    }
+
+    public Ticket() {}
+
+    public Ticket(LocalDateTime creationDate, TicketType ticketType, int userId, int id) {
         this.creationDate = creationDate;
         this.ticketType = ticketType;
         this.userId = userId;
         this.id = id;
     }
 
-    public Ticket(TicketType ticketType, long userId){
-        this.ticketType = ticketType;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUserId(int userId) {
         this.userId = userId;
-        this.id = ++entityCount;
-        this.creationDate = LocalDateTime.now();
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public long getId() {

@@ -3,28 +3,33 @@ package com.tvm.Model;
 import java.time.LocalDateTime;
 
 public class User {
-    private static long entityCount = 0;
-
-    private final long id;
-    private final LocalDateTime creationDate;
+    private int id;
+    private LocalDateTime creationDate;
     private String name;
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", creationDate=" + creationDate +
+                ", name='" + name + '\'' +
+                '}';
+    }
 
-    public User(long id, LocalDateTime creationDate, String name) {
+    public User() {}
+
+    public User(int id, LocalDateTime creationDate, String name) {
         this.id = id;
         this.creationDate = creationDate;
         this.name = name;
     }
 
-    public User(String name){
-        this.name = name;
-        this.id = ++entityCount;
-        this.creationDate = LocalDateTime.now();
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public User() {
-        this.id = ++entityCount;
-        this.creationDate = LocalDateTime.now();
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public long getId() {

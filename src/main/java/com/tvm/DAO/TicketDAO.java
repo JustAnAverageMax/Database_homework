@@ -25,8 +25,8 @@ public class TicketDAO implements DAO<Ticket>{
                 Ticket ticket = new Ticket(
                         resultSet.getTimestamp("creation_date").toLocalDateTime(),
                         ((TicketType) resultSet.getObject("ticket_type")),
-                        resultSet.getLong("user_id"),
-                        resultSet.getLong("id")
+                        resultSet.getInt("user_id"),
+                        resultSet.getInt("id")
                 );
                 tickets.add(ticket);
             }
@@ -68,8 +68,8 @@ public class TicketDAO implements DAO<Ticket>{
                 ticket = new Ticket(
                         resultSet.getTimestamp("creation_time").toLocalDateTime(),
                         resultSet.getObject("ticket_type", TicketType.class),
-                        resultSet.getLong("user_id"),
-                        resultSet.getLong("id")
+                        resultSet.getInt("user_id"),
+                        resultSet.getInt("id")
                 );
             }
         }

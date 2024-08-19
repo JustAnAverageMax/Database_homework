@@ -1,6 +1,5 @@
 package com.tvm;
 
-import com.tvm.DAO.TicketAndUserDAO;
 import com.tvm.Model.Ticket;
 import com.tvm.Model.User;
 import com.tvm.Service.TicketAndUserService;
@@ -47,9 +46,22 @@ public class Main {
     public static void main(String[] args) {
         Ticket testTicket = new Ticket();
         User testUser = new User();
+
+        for(int i = 0; i<10; i++){
+            testUser.setName(getRandomName() + " " + getRandomSurname());
+            userService.save(testUser);
+        }
+
         availableUsersIds = userService.getAllUsersIds();
-        availableTicketsIds = ticketService.getAllTicketsIds();
         int randomUserId = getRandomUserId();
+
+        for(int i = 0; i<10; i++){
+            testTicket.setTicketType(getRandomTicketType());
+            testTicket.setUserId(getRandomUserId());
+            ticketService.save(testTicket);
+        }
+
+        availableTicketsIds = ticketService.getAllTicketsIds();
         int randomTicketId = getRandomTicketId();
 
         printAllUsers();

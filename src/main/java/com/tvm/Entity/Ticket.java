@@ -12,7 +12,7 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ticket_seq")
     @SequenceGenerator(name = "ticket_seq", sequenceName = "ticket_id_seq", allocationSize = 1)
-    private int id;
+    private Integer id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ticket_type", nullable = false)
@@ -22,7 +22,7 @@ public class Ticket {
     private LocalDateTime creationDate;
 
     @Column(name = "user_id")
-    private int userId;
+    private Integer userId;
 
     @PrePersist
     protected void onCreate(){

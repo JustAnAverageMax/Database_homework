@@ -49,6 +49,7 @@ public class Main {
 
         System.out.println("Saving 10 random users...");
         for (int i = 0; i < 10; i++) {
+            testUser = new User();
             testUser.setName(getRandomName() + " " + getRandomSurname());
             userService.save(testUser);
         }
@@ -57,6 +58,7 @@ public class Main {
         int randomUserId = getRandomUserId();
 
         for (int i = 0; i < 100; i++) {
+            testTicket = new Ticket();
             testTicket.setTicketType(getRandomTicketType());
             testTicket.setUserId(getRandomUserId());
             ticketService.save(testTicket);

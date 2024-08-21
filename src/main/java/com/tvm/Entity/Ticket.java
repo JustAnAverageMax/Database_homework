@@ -1,23 +1,34 @@
-package com.tvm.Model;
+package com.tvm.Entity;
 
 import com.tvm.constants.TicketType;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "tickets")
 public class Ticket {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ticket_seq")
+    @SequenceGenerator(name = "ticket_seq", sequenceName = "ticket_id_seq", allocationSize = 1)
     private int id;
-    private int userId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ticket_type", nullable = false)
     private TicketType ticketType;
+
+    @Column(name = "creation_date", updatable = false)
     private LocalDateTime creationDate;
 
-    @Override
-    public String toString() {
-        return "Ticket{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", ticketType=" + ticketType +
-                ", creationDate=" + creationDate +
-                '}';
+    @Column(name = "user_id")
+    private int userId;
+
+    @PrePersist
+    protected void onCreate(){
+        if(creationDate == null){
+            creationDate = LocalDateTime.now();
+        }
     }
 
     public Ticket() {}
@@ -46,7 +57,7 @@ public class Ticket {
     }
 
     public int getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public TicketType getTicketType() {
@@ -59,5 +70,15 @@ public class Ticket {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", ticketType=" + ticketType +
+                ", creationDate=" + creationDate +
+                '}';
     }
 }

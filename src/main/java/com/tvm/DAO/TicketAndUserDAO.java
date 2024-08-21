@@ -1,39 +1,34 @@
 package com.tvm.DAO;
 
-import com.tvm.Model.Ticket;
-import com.tvm.Model.User;
-import com.tvm.constants.Queries;
-import com.tvm.utils.DBUtil;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import com.tvm.Entity.Ticket;
+import com.tvm.Entity.User;
+import com.tvm.utils.SessionFactoryProvider;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class TicketAndUserDAO {
 
-    public void updateUserAndTicket(User user, Ticket ticket, int userId, int ticketId) throws SQLException {
-        String userQuery = Queries.UPDATE_USER;
-        String ticketQuery = Queries.UPDATE_TICKET;
+    public void updateUserAndTicket(User user, Ticket ticket, int userId, int ticketId) {
+        Transaction transaction = null;
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
 
-        try (Connection conn = DBUtil.connect()) {
-            conn.setAutoCommit(false);
-            try(PreparedStatement userPStatement = conn.prepareStatement(userQuery);
-                PreparedStatement ticketPStatement = conn.prepareStatement(ticketQuery)){
-
-                userPStatement.setString(1, user.getName());
-                userPStatement.setInt(2, userId);
-                userPStatement.executeUpdate();
-
-                ticketPStatement.setString(1, ticket.getTicketType().toString());
-                ticketPStatement.setInt(2, ticket.getUserId());
-                ticketPStatement.setInt(3, ticketId);
-                ticketPStatement.executeUpdate();
-
-                conn.commit();
-            }catch(SQLException ex){
-                ex.printStackTrace();
-                conn.rollback();
+            User existingUser = session.get(User.class, userId);
+            if (existingUser != null) {
+                existingUser.setName(user.getName());
+                session.merge(existingUser);
             }
+            Ticket existingTicket = session.get(Ticket.class, ticketId);
+            if (existingTicket != null) {
+                existingTicket.setTicketType(ticket.getTicketType());
+                existingTicket.setUserId(ticket.getUserId());
+            }
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
         }
     }
 }

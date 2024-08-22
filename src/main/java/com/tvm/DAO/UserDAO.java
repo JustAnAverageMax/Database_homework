@@ -1,24 +1,41 @@
 package com.tvm.DAO;
 
-import com.tvm.Model.User;
-import com.tvm.constants.Queries;
-import com.tvm.utils.DBUtil;
+import com.tvm.Entity.User;
+import com.tvm.utils.SessionFactoryProvider;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class UserDAO implements DAO<User> {
 
+    private static final String GET_ALL_IDS = "select u.id from User u";
+    private static final String GET_ALL_USERS = "from User";
+
     @Override
-    public List<Integer> getAllIds() throws SQLException {
-        String query = Queries.GET_ALL_USERS_IDS;
+    public Class<User> getType() {
+        return User.class;
+    }
+
+    @Override
+    public List<Integer> getAllIds(){
         List<Integer> ids = new ArrayList<>();
-        try (Connection conn = DBUtil.connect(); Statement statement = conn.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(query);
-            while(resultSet.next()){
-                ids.add(resultSet.getInt("id"));
+        Transaction transaction = null;
+
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            Query<Integer> query = session.createQuery(GET_ALL_IDS, Integer.class);
+            ids = query.getResultList();
+
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
             }
         }
 
@@ -27,73 +44,53 @@ public class UserDAO implements DAO<User> {
 
 
     @Override
-    public List<User> getAll() throws SQLException {
-        String query = Queries.GET_ALL_USERS;
+    public List<User> getAll(){
         List<User> users = new ArrayList<>();
+        Transaction transaction = null;
 
-        try (Connection conn = DBUtil.connect(); Statement statement = conn.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next()) {
-                User user = new User(
-                        resultSet.getInt("id"),
-                        resultSet.getTimestamp("creation_date").toLocalDateTime(),
-                        resultSet.getString("name")
-                );
-                users.add(user);
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            Query<User> query = session.createQuery(GET_ALL_USERS, User.class);
+            users = query.getResultList();
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
             }
+            e.printStackTrace();
         }
+
         return users;
     }
 
     @Override
-    public void save(User entity) throws SQLException {
-        String query = Queries.SAVE_USER;
-
-        try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, entity.getName());
-            pstmt.executeUpdate();
+    public Optional<User> getById(int id){
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+            return Optional.ofNullable(session.get(User.class, id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
         }
     }
 
     @Override
-    public Optional<User> getById(int id) throws SQLException {
-        String query = Queries.GET_USER_BY_ID;
-        Optional<User> user = Optional.empty();
-
-        try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, id);
-            ResultSet resultSet = pstmt.executeQuery();
-
-            if (resultSet.next()) {
-                user = Optional.of(new User(
-                        resultSet.getInt("id"),
-                        resultSet.getTimestamp("creation_date").toLocalDateTime(),
-                        resultSet.getString("name")
-                ));
+    public void update(int id, User entity){
+        Transaction transaction = null;
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            User existingUser = session.get(this.getType(), id);
+            if (existingUser != null) {
+                existingUser.setName(entity.getName());
+                session.merge(existingUser);
+                transaction.commit();
             }
-        }
-
-        return user;
-    }
-
-    @Override
-    public void update(int id, User entity) throws SQLException {
-        String query = Queries.UPDATE_USER;
-
-        try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, entity.getName());
-            pstmt.setInt(2, id);
-            pstmt.executeUpdate();
-        }
-    }
-
-    @Override
-    public void deleteById(int id) throws SQLException {
-        String query = Queries.DELETE_USER_BY_ID;
-
-        try (Connection conn = DBUtil.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
         }
     }
 }

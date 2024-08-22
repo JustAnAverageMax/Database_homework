@@ -1,7 +1,7 @@
 package com.tvm;
 
-import com.tvm.Model.Ticket;
-import com.tvm.Model.User;
+import com.tvm.Entity.Ticket;
+import com.tvm.Entity.User;
 import com.tvm.Service.TicketAndUserService;
 import com.tvm.Service.TicketService;
 import com.tvm.Service.UserService;
@@ -20,14 +20,14 @@ public class Main {
     public static final List<String> NAMES;
     public static final List<String> SURNAMES;
 
-    static{
+    static {
         List<String> tempNames = Collections.emptyList();
         List<String> tempSurnames = Collections.emptyList();
 
-        try{
+        try {
             tempNames = Files.readAllLines(Paths.get("names.txt"));
             tempSurnames = Files.readAllLines(Paths.get("surnames.txt"));
-        }catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
 
@@ -47,7 +47,9 @@ public class Main {
         Ticket testTicket = new Ticket();
         User testUser = new User();
 
-        for(int i = 0; i<10; i++){
+        System.out.println("Saving 10 random users...");
+        for (int i = 0; i < 10; i++) {
+            testUser = new User();
             testUser.setName(getRandomName() + " " + getRandomSurname());
             userService.save(testUser);
         }
@@ -55,7 +57,8 @@ public class Main {
         availableUsersIds = userService.getAllUsersIds();
         int randomUserId = getRandomUserId();
 
-        for(int i = 0; i<10; i++){
+        for (int i = 0; i < 100; i++) {
+            testTicket = new Ticket();
             testTicket.setTicketType(getRandomTicketType());
             testTicket.setUserId(getRandomUserId());
             ticketService.save(testTicket);
@@ -69,7 +72,7 @@ public class Main {
 
         System.out.println("Updating names in user table");
 
-        for (Integer id: availableUsersIds){
+        for (Integer id : availableUsersIds) {
             testUser.setName(getRandomName() + " " + getRandomSurname());
             userService.update(id, testUser);
         }
@@ -78,7 +81,7 @@ public class Main {
 
         System.out.println("Updating ticket types in ticket table");
 
-        for(Integer id: availableTicketsIds){
+        for (Integer id : availableTicketsIds) {
             testTicket.setUserId(getRandomUserId());
             testTicket.setTicketType(getRandomTicketType());
             ticketService.update(id, testTicket);
@@ -91,7 +94,7 @@ public class Main {
 
         System.out.println("Deleting random users and their tickets (if any): ");
 
-        for(int i = 0; i<5; i++){
+        for (int i = 0; i < 5; i++) {
             Integer idToDelete = getRandomUserId();
             userService.deleteById(idToDelete);
             availableUsersIds.remove(idToDelete);
@@ -116,12 +119,12 @@ public class Main {
 
     }
 
-    public static void printAllUsers(){
+    public static void printAllUsers() {
         System.out.println("Users: ");
         userService.getAllUsers().forEach(System.out::println);
     }
 
-    public static void printAllTickets(){
+    public static void printAllTickets() {
         System.out.println("Tickets: ");
         ticketService.getAllTickets().forEach(System.out::println);
     }
@@ -138,11 +141,11 @@ public class Main {
         return TICKET_TYPES[RND.nextInt(TICKET_TYPES.length)];
     }
 
-    public static String getRandomName(){
+    public static String getRandomName() {
         return NAMES.get(RND.nextInt(NAMES.size()));
     }
 
-    public static String getRandomSurname(){
+    public static String getRandomSurname() {
         return SURNAMES.get(RND.nextInt(NAMES.size()));
     }
 }

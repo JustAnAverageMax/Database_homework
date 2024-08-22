@@ -1,7 +1,7 @@
 package com.tvm.Service;
 
 import com.tvm.DAO.TicketDAO;
-import com.tvm.Model.Ticket;
+import com.tvm.Entity.Ticket;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,79 +11,45 @@ import java.util.Optional;
 public class TicketService {
     private final TicketDAO ticketDAO = new TicketDAO();
 
-    public List<Integer> getAllTicketsIds(){
-        List<Integer> result = new ArrayList<>();
-        try{
-            result = ticketDAO.getAllIds();
-        } catch(SQLException ex){
-            ex.printStackTrace();
-        }
-        return result;
+    public List<Integer> getAllTicketsIds() {
+        return ticketDAO.getAllIds();
     }
 
-    public List<Ticket> getAllTickets(){
-        try {
-            return ticketDAO.getAll();
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }
-        return List.of();
+    public List<Ticket> getAllTickets() {
+        return ticketDAO.getAll();
     }
 
-    public List<Ticket> getTicketsByUserId(int userId){
-        try{
-            return ticketDAO.getTicketsByUserId(userId);
-        }catch(SQLException ex){
-            ex.printStackTrace();
-            return List.of();
-        }
+    public List<Ticket> getTicketsByUserId(int userId) {
+        return ticketDAO.getTicketsByUserId(userId);
     }
 
-    public void deleteByUserID(int userId){
-        try{
-            ticketDAO.deleteByUserId(userId);
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }
+    public void deleteByUserID(int userId) {
+        ticketDAO.deleteByUserId(userId);
     }
 
-    public void save(Ticket ticket){
-        try{
-            ticketDAO.save(ticket);
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }
+    public void save(Ticket ticket) {
+        ticketDAO.save(ticket);
     }
 
-    public Ticket getById(int id){
+    public Ticket getById(int id) {
         Ticket result = new Ticket();
-        try{
-            Optional<Ticket> ticketOpt = ticketDAO.getById(id);
-            if(ticketOpt.isPresent()){
-                result = ticketOpt.get();
-            }else{
-                System.out.println("No such ticket found");
-            }
-        }catch (SQLException ex){
-            ex.printStackTrace();
+
+        Optional<Ticket> ticketOpt = ticketDAO.getById(id);
+        if (ticketOpt.isPresent()) {
+            result = ticketOpt.get();
+        } else {
+            System.out.println("No such ticket found");
         }
+
         return result;
     }
 
-    public void update(int id, Ticket ticket){
-        try{
-            ticketDAO.update(id, ticket);
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }
+    public void update(int id, Ticket ticket) {
+        ticketDAO.update(id, ticket);
     }
 
-    public void deleteById(int id){
-        try{
-            ticketDAO.deleteById(id);
-        }catch (SQLException ex){
-            ex.printStackTrace();
-        }
+    public void deleteById(int id) {
+        ticketDAO.deleteById(id);
     }
 
 }
